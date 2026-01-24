@@ -60,70 +60,15 @@ void PutPixel(int x, int y, uint32_t color)
     }
     gPixels[y * W + x] = color;
 }
-void drawSquare()
-{
-    for (int i = 0; i < squareW; i++)
-    {
-        PutPixel((W - squareW) / 2 + i, (H - squareH) / 2, 0x00FFFFFF);
-    }
-    for (int i = 0; i < squareW; i++)
-    {
-        PutPixel((W - squareW) / 2, (H - squareH) / 2 + i, 0x00FFFFFF);
-    }
-    for (int i = 0; i < squareW; i++)
-    {
-        PutPixel((W - squareW) / 2 + i, (H - squareH) / 2 + squareH, 0x00FFFFFF);
-    }
-    for (int i = 0; i < squareW; i++)
-    {
-        PutPixel((W - squareW) / 2 + squareW, (H - squareH) / 2 + i, 0x00FFFFFF);
-    }
-}
-void drawBall(double xm, double ym, uint32_t color)
-{
-    int xp = (int)(xm * (squareW / maxWm) + (W - squareW) / 2);
-    int yp = (int)((maxHm - ym) * (squareH / maxHm) + (H - squareH) / 2);
-    PutPixel(xp, yp, color);
-    for (int layer = 0; layer < radiusPixels * 2 + 1; layer++)
-    {
-        for (int layerX = 0; layerX < radiusPixels * 2 + 1; layerX++)
-        {
-            PutPixel(xp - radiusPixels + layerX, yp - radiusPixels + layer, color);
-        }
-    }
-}
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     switch (msg)
     {
     case WM_TIMER:
     {
-        ballXm += velXm * dt;
-        ballYm += velYm * dt;
-        if (ballXm - r < 0)
-        {
-            ballXm = r;
-            velXm = -velXm;
-        }
-        if (ballXm + r > maxWm)
-        {
-            ballXm = maxWm - r;
-            velXm = -velXm;
-        }
-        if (ballYm - r < 0)
-        {
-            ballYm = r;
-            velYm = -velYm;
-        }
-        if (ballYm + r > maxHm)
-        {
-            ballYm = maxHm - r;
-            velYm = -velYm;
-        }
 
         Clear(0x00000000);
-        drawSquare();
-        drawBall(ballXm, ballYm, 0x00FFFFFF);
+        // draw
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }
@@ -170,7 +115,6 @@ int main()
     ShowWindow(hwnd, SW_SHOW);
     SetTimer(hwnd, 1, 16, nullptr);
     MSG msg;
-    drawSquare();
     InvalidateRect(hwnd, nullptr, FALSE);
     while (GetMessage(&msg, nullptr, 0, 0))
     {
