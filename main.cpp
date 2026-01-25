@@ -5,13 +5,13 @@
 #include <windows.h>
 #include <cstdlib>
 #include <cstdint>
+#include <array>
+#include <vector>
 
 using namespace std;
 
-static const int W = 800;
+static const int W = 1000;
 static const int H = 800;
-static int squareW = 600;
-static int squareH = 600;
 static uint32_t *gPixels = nullptr;
 static BITMAPINFO gBmi = {};
 static double maxHm = 40.0;
@@ -28,7 +28,18 @@ double velXm = velm * cos(angleRadians);
 double velYm = velm * sin(angleRadians);
 const double dt = 0.016;
 const int radiusPixels = 10;
-const double r = radiusPixels * (maxWm / squareW);
+struct Vector2D
+{
+    double x;
+    double y;
+    Vector2D()
+        : x(0.0), y(0.0)
+    {
+    }
+};
+class CelestialBody
+{
+};
 void InitFramebuffer()
 {
     gPixels = new uint32_t[W * H];
