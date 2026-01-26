@@ -8,8 +8,6 @@
 #include <array>
 #include <vector>
 
-using namespace std;
-
 static const int W = 1000;
 static const int H = 800;
 static uint32_t *gPixels = nullptr;
@@ -17,15 +15,15 @@ static BITMAPINFO gBmi = {};
 static double maxHm = 40.0;
 static double maxWm = 40.0;
 
-const double pi = acos(-1);
+const double pi = std::acos(-1);
 double angleDegrees = 30;
 double angleRadians = angleDegrees * pi / 180.0;
 double ballXm = 0.0;
 double ballYm = 0.0;
 double velm = 30.0;
 
-double velXm = velm * cos(angleRadians);
-double velYm = velm * sin(angleRadians);
+double velXm = velm * std::cos(angleRadians);
+double velYm = velm * std::sin(angleRadians);
 const double dt = 0.016;
 const int radiusPixels = 10;
 struct Vector2D
@@ -34,11 +32,23 @@ struct Vector2D
     double y;
     Vector2D()
         : x(0.0), y(0.0)
-    {
+    {}
+    Vector2D(double x_, double y_)
+        : x(x_), y(y_) 
+    {}
+    Vector2D operator+(const Vector2D& other) {
+        Vector2D result;
+        result.x= x+ other.x;
+        result.y=y+other.y;
+        return result;
     }
 };
 class CelestialBody
 {
+    double mass;
+    double radius;
+    Vector2D position;
+    Vector2D velocity; 
 };
 void InitFramebuffer()
 {
