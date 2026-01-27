@@ -45,14 +45,13 @@ struct Vector2D
 };
 class CelestialBody
 {
-    private:
+    public:
     double mass;
     double radius;
     Vector2D position;
     Vector2D velocity;
     double rotationAngle;
     double rotationSpeed; 
-    public:
         CelestialBody()
         : mass(1.0), radius(1.0), position(0.0, 0.0), velocity(0.0, 0.0)
     {}
@@ -98,7 +97,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_TIMER:
     {
-        auto bodyListPtr = reinterpret_cast<std::vector<CelestialBody>*>( GetWindowLongPtr(hwnd, GWLP_USERDATA) ); Clear(0x00000000); if (bodyListPtr) { for (auto& body : *bodyListPtr) { // draw body } }
+        auto bodyListPtr = 
+        reinterpret_cast<std::vector<CelestialBody>*>( 
+            GetWindowLongPtr(hwnd, GWLP_USERDATA) 
+            ); 
+        Clear(0x00000000); 
+        int spacePerPixel=5;
+        if (bodyListPtr) { 
+            for (auto& body : *bodyListPtr) { 
+                // draw body 
+
+            } }
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }
