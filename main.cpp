@@ -45,10 +45,21 @@ struct Vector2D
 };
 class CelestialBody
 {
+    private:
     double mass;
     double radius;
     Vector2D position;
-    Vector2D velocity; 
+    Vector2D velocity;
+    double rotationAngle;
+    double rotationSpeed; 
+    public:
+        CelestialBody()
+        : mass(1.0), radius(1.0), position(0.0, 0.0), velocity(0.0, 0.0)
+    {}
+        CelestialBody(double mass_, double radius_, Vector2D position_, Vector2D velocity_)
+        : mass(mass_), radius(radius_), position(position_), velocity(velocity_)
+    {}
+
 };
 void InitFramebuffer()
 {
@@ -87,11 +98,16 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_TIMER:
     {
-
-        Clear(0x00000000);
-        // draw
+        auto bodyListPtr = reinterpret_cast<std::vector<CelestialBody>*>( GetWindowLongPtr(hwnd, GWLP_USERDATA) ); Clear(0x00000000); if (bodyListPtr) { for (auto& body : *bodyListPtr) { // draw body } }
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
+    }
+    case WM_NCCREATE: { 
+        CREATESTRUCTW* cs = reinterpret_cast<CREATESTRUCTW*>(lParam);
+        auto bodyListPtr = reinterpret_cast<std::vector<CelestialBody>*>(cs->lpCreateParams);
+        // store pointer inside window long 
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)bodyListPtr); 
+        return TRUE; 
     }
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -117,13 +133,17 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 int main()
 {
+    std::vector<CelestialBody> BodyList;
+    CelestialBody Sun(10.0, 10.0, Vector2D(0.0, 0.0), Vector2D(0.0, 0.0));
+    CelestialBody Earth(1.0, 1.0, Vector2D(-20.0, 0.0), Vector2D(0.0, -10.0));
+    BodyList.push_back(Sun);
+    BodyList.push_back(Earth);
     InitFramebuffer();
     WNDCLASSW wc = {};
     wc.lpfnWndProc = WndProc;
     wc.hInstance = GetModuleHandle(nullptr);
     wc.lpszClassName = L"MySimWindowClass";
     RegisterClassW(&wc);
-
     HWND hwnd = CreateWindowExW(
         0,
         wc.lpszClassName,
@@ -132,7 +152,8 @@ int main()
         CW_USEDEFAULT, CW_USEDEFAULT,
         W, H,
         nullptr, nullptr,
-        wc.hInstance, nullptr);
+        wc.hInstance, 
+        &BodyList);
     ShowWindow(hwnd, SW_SHOW);
     SetTimer(hwnd, 1, 16, nullptr);
     MSG msg;
