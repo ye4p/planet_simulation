@@ -32,33 +32,52 @@ struct Vector2D
     double y;
     Vector2D()
         : x(0.0), y(0.0)
-    {}
+    {
+    }
     Vector2D(double x_, double y_)
-        : x(x_), y(y_) 
-    {}
-    Vector2D operator+(const Vector2D& other) {
+        : x(x_), y(y_)
+    {
+    }
+    Vector2D operator+(const Vector2D &other)
+    {
         Vector2D result;
-        result.x= x+ other.x;
-        result.y=y+other.y;
+        result.x = x + other.x;
+        result.y = y + other.y;
         return result;
+    }
+    Vector2D operator-(const Vector2D &other)
+    {
+        Vector2D result;
+        result.x = x + other.x;
+        result.y = y + other.y;
+        return result;
+    }
+    Vector2D operator*(double scalar) const
+    {
+        return Vector2D(x * scalar, y * scalar);
+    }
+    double length() const
+    {
+        return std::sqrt(x * x + y * y);
     }
 };
 class CelestialBody
 {
-    public:
+public:
     double mass;
     double radius;
     Vector2D position;
     Vector2D velocity;
     double rotationAngle;
-    double rotationSpeed; 
-        CelestialBody()
+    double rotationSpeed;
+    CelestialBody()
         : mass(1.0), radius(1.0), position(0.0, 0.0), velocity(0.0, 0.0)
-    {}
-        CelestialBody(double mass_, double radius_, Vector2D position_, Vector2D velocity_)
+    {
+    }
+    CelestialBody(double mass_, double radius_, Vector2D position_, Vector2D velocity_)
         : mass(mass_), radius(radius_), position(position_), velocity(velocity_)
-    {}
-
+    {
+    }
 };
 void InitFramebuffer()
 {
@@ -97,26 +116,28 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
     {
     case WM_TIMER:
     {
-        auto bodyListPtr = 
-        reinterpret_cast<std::vector<CelestialBody>*>( 
-            GetWindowLongPtr(hwnd, GWLP_USERDATA) 
-            ); 
-        Clear(0x00000000); 
-        int spacePerPixel=5;
-        if (bodyListPtr) { 
-            for (auto& body : *bodyListPtr) { 
-                // draw body 
-
-            } }
+        auto bodyListPtr =
+            reinterpret_cast<std::vector<CelestialBody> *>(
+                GetWindowLongPtr(hwnd, GWLP_USERDATA));
+        Clear(0x00000000);
+        int spacePerPixel = 5;
+        if (bodyListPtr)
+        {
+            for (auto &body : *bodyListPtr)
+            {
+                // draw body
+            }
+        }
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }
-    case WM_NCCREATE: { 
-        CREATESTRUCTW* cs = reinterpret_cast<CREATESTRUCTW*>(lParam);
-        auto bodyListPtr = reinterpret_cast<std::vector<CelestialBody>*>(cs->lpCreateParams);
-        // store pointer inside window long 
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)bodyListPtr); 
-        return TRUE; 
+    case WM_NCCREATE:
+    {
+        CREATESTRUCTW *cs = reinterpret_cast<CREATESTRUCTW *>(lParam);
+        auto bodyListPtr = reinterpret_cast<std::vector<CelestialBody> *>(cs->lpCreateParams);
+        // store pointer inside window long
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)bodyListPtr);
+        return TRUE;
     }
     case WM_DESTROY:
         PostQuitMessage(0);
@@ -161,7 +182,7 @@ int main()
         CW_USEDEFAULT, CW_USEDEFAULT,
         W, H,
         nullptr, nullptr,
-        wc.hInstance, 
+        wc.hInstance,
         &BodyList);
     ShowWindow(hwnd, SW_SHOW);
     SetTimer(hwnd, 1, 16, nullptr);
