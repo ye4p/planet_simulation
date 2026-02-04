@@ -26,6 +26,7 @@ double velXm = velm * std::cos(angleRadians);
 double velYm = velm * std::sin(angleRadians);
 const double dt = 0.016;
 const int radiusPixels = 10;
+const double G=6.67;
 struct Vector2D
 {
     double x;
