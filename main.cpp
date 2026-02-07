@@ -26,7 +26,6 @@ double velXm = velm * std::cos(angleRadians);
 double velYm = velm * std::sin(angleRadians);
 const double dt = 0.016;
 const int radiusPixels = 10;
-const double G=6.67;
 struct Vector2D
 {
     double x;
@@ -71,6 +70,7 @@ public:
     Vector2D velocity;
     double rotationAngle;
     double rotationSpeed;
+    const double G = 6.67;
     CelestialBody()
         : mass(1.0), radius(1.0), position(0.0, 0.0), velocity(0.0, 0.0)
     {
@@ -79,6 +79,15 @@ public:
         : mass(mass_), radius(radius_), position(position_), velocity(velocity_)
     {
     }
+    void UpdatePhysics(std::vector<CelestialBody> &bodies, double dt)
+    {
+        if (bodies.size() < 2)
+        {
+            return;
+        }
+        CelestialBody &sun = bodies[0];
+        CelestialBody &planet = bodies[1];
+        }
 };
 void InitFramebuffer()
 {
